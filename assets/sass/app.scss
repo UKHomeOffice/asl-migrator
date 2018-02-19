@@ -1,0 +1,30 @@
+@import "@asl/service";
+
+.droparea {
+  padding: 3rem;
+  border: 2px dashed $secondary-text-colour;
+  text-align: center;
+  font-size: 5rem;
+
+  label {
+    font-size: 3rem;
+    font-weight: normal;
+  }
+
+  &.active {
+    padding: 5rem 1rem;
+    border: 2px solid $govuk-blue;
+    background: $highlight-colour;
+  }
+}
+
+.logs {
+  padding: $gutter;
+  background: $highlight-colour;
+  overflow: auto;
+  max-height: 300px;
+  font-family: monospace;
+  font-size: 0.8em;
+  box-shadow: inset 0 0 3px 0 rgba(0,0,0,0.1);
+  white-space: pre;
+}
