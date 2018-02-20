@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "asl-migrate": "./bin/migrate"
+  },
   "scripts": {
     "build": "npm run build:css && npm run build:js",
     "prebuild:css": "mkdir -p public/css",
@@ -20,9 +23,13 @@
     "babel-preset-react": "^6.24.1",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
+    "cli-progress": "^1.7.0",
     "csv-parse": "^2.0.4",
+    "dotenv": "^5.0.0",
     "express-sse": "^0.4.1",
+    "glob": "^7.1.2",
     "govuk-react-components": "^0.3.3",
+    "minimist": "^1.2.0",
     "moment": "^2.20.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
