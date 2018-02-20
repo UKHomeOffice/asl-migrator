@@ -12,6 +12,7 @@ module.exports = settings => {
   const app = ui(settings);
   const sse = new SSE();
   const db = Schema(settings.db);
+  //db.sync({ force: true });
 
   app.use(bodyParser.json({ limit: '10mb' }));
 
@@ -27,10 +28,15 @@ module.exports = settings => {
   app.get('/logs', sse.init);
 
   app.post('/upload', (req, res, next) => {
-    const data = Buffer.from(req.body.data.split('base64,')[1], 'base64').toString('utf8');
-    const migrator = new Migrator(data, { db, sse });
-    migrator.migrate();
-    res.json({ id: migrator.id });
+    const response = req.body.files.map(file => {
+      const data = Buffer.from(file.data.split('base64,')[1], 'base64').toString('utf8');
+      const migrator = new Migrator(data, { db, sse });
+      return { name: file.name, id: migrator.id, migrator };
+    });
+    response.reduce((p, o) => {
+      return p.then(() => o.migrator.migrate());
+    }, Promise.resolve());
+    res.json(response.map(r => ({ name: r.name, id: r.id })));
   });
 
   return app;

@@ -28,3 +28,18 @@
   box-shadow: inset 0 0 3px 0 rgba(0,0,0,0.1);
   white-space: pre;
 }
+
+.progress-bar {
+
+  background: $highlight-colour;
+  height: 10px;
+  .progress-incomplete {
+    background: $govuk-blue;
+    height: 10px;
+  }
+  .progress-complete {
+    background: $green;
+    height: 10px;
+    width: 100%;
+  }
+}

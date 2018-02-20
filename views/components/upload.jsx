@@ -2,11 +2,12 @@ const React = require('react');
 
 const ErrorMessage = require('./error');
 const Log = require('./log');
+const Progress = require('./progress');
 
 class Upload extends React.Component {
 
   componentWillMount() {
-    this.setState({active: false, error: null, logs: [] });
+    this.reset();
     this.events = new EventSource('/logs');
     this.events.onerror = e => {
       this.log(e.message, 'error');
@@ -15,6 +16,10 @@ class Upload extends React.Component {
 
   componentWillUnmount() {
     this.events.close();
+  }
+
+  reset() {
+    this.setState({active: false, error: null, logs: [], progress: {} });
   }
 
   dragover(e) {
@@ -28,46 +33,62 @@ class Upload extends React.Component {
 
   drop(e) {
     e.preventDefault();
-    this.setState({ active: false, error: null, logs: [] });
+    this.reset();
     const files = [].slice.call(e.dataTransfer.files);
+
     if (files.length === 0) {
       return;
     }
-    const file = files[0];
-    if (files.length > 1) {
-      return this.setState({ error: 'Only upload one file at a time' });
-    }
-    if (file.type !== 'text/csv') {
-      return this.setState({ error: `Incorrect file type: ${file.type}` });
-    }
-    const reader = new FileReader();
-    reader.addEventListener('loadend', (e) => {
-      this.upload(e.target.result);
-    }, false);
-    reader.readAsDataURL(file);
+
+    Promise.all(files.map(file => {
+      return new Promise((resolve, reject) => {
+        if (file.type !== 'text/csv') {
+          reject(new Error(`Invalid file type: ${file.type}`));
+        }
+        const reader = new FileReader();
+        reader.addEventListener('loadend', (e) => {
+          resolve({
+            name: file.name,
+            data: e.target.result
+          });
+        }, false);
+        reader.readAsDataURL(file);
+      });
+    }))
+    .then(results => {
+      return this.upload(results);
+    });
   }
 
-  upload(data) {
+  upload(files) {
     const options = {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
       method: 'POST',
-      body: JSON.stringify({ data })
+      body: JSON.stringify({ files })
     };
 
     return fetch('/upload', options)
       .then(response => {
         return response.json()
           .then(json => {
-            const id = json.id;
-            this.events.addEventListener(id, data => {
-              try {
-                const { message, type } = JSON.parse(data.data);
-                this.log(message, type);
-              } catch (e) {}
-            });
+            json.forEach(file => {
+              const id = file.id;
+              this.progress(0, 100, file.name);
+              this.events.addEventListener(id, data => {
+                try {
+                  const { message, type } = JSON.parse(data.data);
+                  const { total, done } = message;
+                  if (total) {
+                    this.progress(done, total, file.name);
+                  } else {
+                    this.log(message, type);
+                  }
+                } catch (e) {}
+              });
+            })
           });
       });
 
@@ -78,6 +99,14 @@ class Upload extends React.Component {
     type = type || 'info';
     logs.push({ message, type, id: logs.length });
     this.setState(logs);
+  }
+
+  progress(done, total, id) {
+    const progress = this.state.progress || {};
+    progress[id] = progress[id] || {};
+    progress[id].total = total;
+    progress[id].done = done;
+    this.setState({ progress });
   }
 
   render() {
@@ -95,9 +124,9 @@ class Upload extends React.Component {
           >
           <label>{placeholder}</label>
         </div>
-
-        <h2>Logs</h2>
-        <Log logs={this.state.logs} />
+        {
+          Object.keys(this.state.progress).map(p => <Progress key={p} name={p} done={this.state.progress[p].done} total={this.state.progress[p].total} />)
+        }
       </div>
     );
   }
