@@ -85,6 +85,15 @@ describe('Location', () => {
         assert.deepEqual(output.suitability, ['LA', 'EQ', 'NHP']);
       });
 
+      it('does not migrate notes if everything in the suitability codes is a code', () => {
+        const input = {
+          locations_suit_codes: 'SA, LA',
+          locations_hold_codes: ''
+        }
+        const output = LocationMapper.transform(input);
+        assert.equal(output.notes, '');
+      });
+
       it('adds the suitability codes to the notes if it contains a "not code"', () => {
         const input = {
           locations_suit_codes: 'SA Ferret',
