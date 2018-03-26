@@ -11,7 +11,7 @@ const Schema = require('@asl/schema');
 const Migrator = require('../lib/migrator');
 const config = require('../config');
 
-const db = Schema(config.db);
+const db = Schema(config);
 
 const input = require('minimist')(process.argv.slice(2));
 
