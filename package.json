@@ -38,6 +38,7 @@
     "webpack": "^3.11.0"
   },
   "devDependencies": {
+    "@asl/mocks": "^2.1.0",
     "mocha": "^5.0.1",
     "npm-sass": "^2.2.1"
   },
