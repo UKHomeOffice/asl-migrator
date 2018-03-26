@@ -13,7 +13,7 @@ const config = require('../config');
 
 const db = Schema(config);
 
-const input = require('minimist')(process.argv.slice(2));
+const input = require('minimist')(process.argv.slice(2), { boolean: ['drop'] });
 
 const files = input._;
 
@@ -48,12 +48,18 @@ Promise.resolve()
             }
           });
           return migrator.migrate()
-            .then(() => {
+            .then(() => progress.stop())
+            .catch(e => {
               progress.stop();
+              throw e;
             });
         });
     }, { concurrency: 1 });
   })
   .then(() => {
     return db.close();
+  })
+  .catch(e => {
+    console.error(e);
+    process.exit(1);
   });
