@@ -12,11 +12,12 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@asl/schema": "^1.6.0",
+    "@asl/schema": "^1.8.2",
     "bluebird": "^3.5.1",
     "cli-progress": "^1.7.0",
     "csv-parse": "^2.0.4",
     "dotenv": "^5.0.0",
+    "lorem-ipsum": "^1.0.4",
     "minimist": "^1.2.0",
     "moment": "^2.20.1",
     "uuid": "^3.2.1"
