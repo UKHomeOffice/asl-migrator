@@ -12,7 +12,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@asl/schema": "^1.10.0",
+    "@asl/schema": "^1.11.0",
     "bluebird": "^3.5.1",
     "cli-progress": "^1.7.0",
     "csv-parse": "^2.0.4",
