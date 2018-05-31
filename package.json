@@ -12,7 +12,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@asl/schema": "^1.11.0",
+    "@asl/mocks": "^2.3.1",
+    "@asl/schema": "^1.13.2",
     "bluebird": "^3.5.1",
     "cli-progress": "^1.7.0",
     "csv-parse": "^2.0.4",
@@ -23,7 +24,6 @@
     "uuid": "^3.2.1"
   },
   "devDependencies": {
-    "@asl/mocks": "^2.2.0",
     "mocha": "^5.0.1"
   },
   "publishConfig": {
