@@ -15,7 +15,7 @@ const db = Schema(config);
 
 const input = require('minimist')(process.argv.slice(2), { boolean: ['drop'] });
 
-const files = input._;
+const files = input._.sort();
 
 const readFile = file => {
   return new Promise((resolve, reject) => {
@@ -32,7 +32,7 @@ Promise.resolve()
     }
   })
   .then(() => {
-    return Promise.map(files, file => {
+    return Promise.mapSeries(files, file => {
       return readFile(file)
         .then(data => {
           console.log(file);
@@ -54,7 +54,7 @@ Promise.resolve()
               throw e;
             });
         });
-    }, { concurrency: 1 });
+    });
   })
   .then(() => {
     return db.close();
