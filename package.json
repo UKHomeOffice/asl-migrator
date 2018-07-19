@@ -13,7 +13,7 @@
   "license": "MIT",
   "dependencies": {
     "@asl/mocks": "^2.4.0",
-    "@asl/schema": "^1.14.1",
+    "@asl/schema": "^2.0.0",
     "bluebird": "^3.5.1",
     "cli-progress": "^1.7.0",
     "csv-parse": "^2.0.4",
